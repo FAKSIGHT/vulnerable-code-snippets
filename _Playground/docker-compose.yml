@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: playground
+    build: .
+    ports:
+      - "9999:80"
+    volumes:
+     - ./src:/var/www/html
