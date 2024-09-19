@@ -7,6 +7,7 @@ WORKDIR /var/www/html/
 
 #Prepare and setup the working directory
 WORKDIR /var/www/html/
+RUN mkdir /var/www/html/uploads
 COPY vsnippet .
 RUN mkdir tmp
 
