@@ -1,5 +1,15 @@
-{   
-    "scripts": {
-        "start": "node 11-cors-classic.js"
-    }
+{
+  "name": "csfr-vulnerable-app",
+  "version": "1.0.0",
+  "description": "A vulnerable app for CSRF scenario using Node.js and SQLite",
+  "main": "11-cors-classic.js",
+  "scripts": {
+    "start": "node 11-cors-classic.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.0",
+    "cookie-parser": "^1.4.5",
+    "body-parser": "^1.19.0"
+  }
 }

@@ -1,60 +1,121 @@
 /**
-* YesWeHack - Vulnerable code snippets
-*/
+ * YesWeHack - Vulnerable code snippets with SQLite integration (POST form and CORS)
+ */
 const express = require('express');
-const app = express()
+const sqlite3 = require('sqlite3').verbose();
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const app = express();
 
-function GetCredentials(session) {
-    /**
-    * Ilustrait a random logged in user (For clear view)
-  	*   Real senario would use a database or similary
-    *   but the returned value would remain the same.
-    */
-    return {
-        "id": 1,
-        "username": "James007",
-        "email": "james@ywh.com",
-        "session" : "9b13252f346c2073e0c9ed39aad87ba9e9a59dd925606c6cdb12eec0d7368b5b"
-     };
-}
+app.use(bodyParser.urlencoded({ extended: true })); // For parsing form data
+app.use(cookieParser());
 
-app.get('/', function (req,res) {
-    //Response status/headers + write
-    origin = req.headers["origin"];
-    if ( origin == undefined || origin == "" ) {
-        console.log("Origin set to wildcard")
-        origin = "*";
-    }
+// Create a SQLite database and users table
+const db = new sqlite3.Database(':memory:');
 
-    const headers = {
-        "Access-Control-Allow-Origin": origin,
-        "Access-Control-Allow-Credentials": "true",
-        "Content-Type": "application/json",
-    };
-    res.writeHead(200, headers);
-
-    //Log to see user requested referer and to what host:
-    console.log(`[${Date()}][LOG]`, req.headers["referer"], "=>", req.headers["host"]);
-
-    //Gather credentials for user related to his/her session: 
-    sess = GetCredentials(req.session)
-
-    //Prepair user data to be included:
-    userCred = {
-        "id": sess.id,
-        "username": sess.username,
-        "email": sess.email,
-        "session": sess.session,
-    };
-
-    //Output credentials to requested user
-    res.end(JSON.stringify(userCred));
+db.serialize(() => {
+    db.run("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, password TEXT)");
+    db.run("INSERT INTO users (username, password) VALUES ('James007', 'password123')");
 });
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-//Start web app:
-PORT = 1337
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+
+    next();
+});
+
+// Serve links to the forms
+app.get('/', function (req, res) {
+    res.send(`
+        <h1>Welcome</h1>
+        <p><a href="/login-form">Login Form</a></p>
+        <p><a href="/change-password-form">Change Password Form</a></p>
+    `);
+});
+
+// Serve a simple login form
+app.get('/login-form', function (req, res) {
+    res.send(`
+        <form action="/login" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
+            <button type="submit">Login</button>
+        </form>
+    `);
+});
+
+// Endpoint to authenticate user and set a cookie if credentials are correct (POST)
+app.post('/login', function (req, res) {
+    const { username, password } = req.body;
+
+    GetUserCredentials(username, (user) => {
+        if (user && user.password === password) {
+            // Set a session cookie if login is successful
+            res.cookie('session', user.id, { httpOnly: true });
+            res.send("Login successful");
+        } else {
+            res.status(401).send("Invalid credentials");
+        }
+    });
+});
+
+// Serve a simple password change form
+app.get('/change-password-form', function (req, res) {
+    res.send(`
+        <form action="/change-password" method="POST">
+            <label for="newPassword">New Password:</label>
+            <input type="password" name="newPassword" id="newPassword" required>
+            <button type="submit">Change Password</button>
+        </form>
+    `);
+});
+
+// Endpoint to change password (requires a session cookie, POST with CORS headers)
+app.post('/change-password', function (req, res) {
+    const { newPassword } = req.body;
+    const userId = req.cookies.session;
+
+    if (!userId) {
+        return res.status(401).send("Not authenticated");
+    }
+
+    // Validate password length
+    if (newPassword.length < 6) {
+        return res.status(400).send("Password too short");
+    }
+
+    // Update the password in the database
+    db.run("UPDATE users SET password = ? WHERE id = ?", [newPassword, userId], function (err) {
+        if (err) {
+            res.status(500).json({ error: "Database error" });
+        } else {
+            res.json({ message: "Password changed successfully" });
+        }
+    });
+});
+
+// Function to get user credentials from the database
+function GetUserCredentials(username, callback) {
+    db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
+        if (err) {
+            callback(null);
+        } else {
+            callback(row);
+        }
+    });
+}
+
+// Start web app:
+const PORT = 1337;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://0.0.0.0:${PORT}`);
-  });
-  
+});
