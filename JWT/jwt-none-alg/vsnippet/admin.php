@@ -24,7 +24,7 @@ if (isset($payload['exp']) && $payload['exp'] < time()) {
 // Vulnérabilité : si l'algorithme est "none", ne pas vérifier la signature
 if ($header['alg'] === 'none') {
     echo "Bienvenue, " . htmlspecialchars($payload['username']) . "!";
-    echo "<br>Vous avez accès à la page admin sans vérification de signature.";
+    echo "<br>Vous avez accès à la page admin.";
 } else {
     // Vérifier la signature avec la clé publique si l'algorithme est RS256
     $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(json_encode($header)));
