@@ -1,0 +1,9 @@
+{
+  "name": "vsnippet-xss-christmas",
+  "version": "1.0.0",
+  "description": "Type Confusion XSS Challenge",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
