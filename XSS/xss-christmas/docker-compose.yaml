@@ -1,0 +1,8 @@
+services:
+  nodejs-app:
+    container_name: vsnippet-xss-christmas
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:1337:1337"

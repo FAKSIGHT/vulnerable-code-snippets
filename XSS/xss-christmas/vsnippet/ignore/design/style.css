@@ -1,0 +1,133 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to bottom, #2c3e50, #4ca1af);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 700px;
+  margin: 80px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+}
+
+h1 {
+  color: #e74c3c;
+  font-size: 3rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  display: block;
+  color: #34495e;
+}
+
+input, textarea {
+  width: 90%;
+  margin: 10px 0;
+  padding: 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s;
+}
+
+input:focus, textarea:focus {
+  box-shadow: 0 0 5px rgba(46, 204, 113, 0.8);
+  outline: none;
+}
+
+.button {
+  display: inline-block;
+  padding: 15px 30px;
+  background: #e74c3c;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.button:hover {
+  background: #6b0000;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+}
+
+.button:active {
+  background: #4b0000;
+  transform: translateY(2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes snow {
+  0% { transform: translateY(-10px); opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.snowflakes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: #fff;
+  opacity: 0.9;
+  animation: snow linear infinite;
+  pointer-events: none;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.letter-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.4;
+  width: 70%;
+  max-width: 500px;
+  color: #555;
+  text-align: left;
+}
+
+.letter-box h2 {
+  color: #8b0000;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.letter-box p {
+  margin: 10px 0;
+  word-wrap: break-word;
+}
